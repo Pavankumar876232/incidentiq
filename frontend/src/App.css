@@ -1,0 +1,47 @@
+.container {
+  padding: 20px;
+  font-family: Arial;
+  background: #f9fafc;
+}
+
+button {
+  padding: 10px 16px;
+  margin-bottom: 20px;
+  background: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1565c0;
+}
+
+.charts {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.chart {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.ai-box {
+  background: #e8ecf8;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.history-card {
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background: #ffffff;
+}
