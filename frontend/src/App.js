@@ -8,7 +8,7 @@ import {
 function App() {
   const [history, setHistory] = useState([]);
 
-  // ✅ FIXED API (no trailing slash)
+  // ✅ Backend URL (NO trailing slash)
   const API = "https://incidentiq-ryxt.onrender.com";
 
   const triggerIncident = async () => {
@@ -28,20 +28,25 @@ function App() {
         })
       });
 
-      // ❌ Handle backend failure
-      if (!res.ok) {
-        console.error("API ERROR:", res.status);
-        alert("Backend error: " + res.status);
+      // ❗ Handle backend sleep / failure
+      if (!res || !res.ok) {
+        alert("⚠️ Backend waking up... try again in 30 seconds");
         return;
       }
 
-      const data = await res.json();
-      console.log("API RESPONSE:", data);
+      let data;
+      try {
+        data = await res.json();
+      } catch (err) {
+        console.error("JSON parse error:", err);
+        alert("⚠️ Server response error");
+        return;
+      }
 
-      // ❌ Prevent crash if response is wrong
-      if (!data || !data.event) {
-        console.error("Invalid API response", data);
-        alert("Invalid response from backend");
+      // ❗ Prevent crash if response is invalid
+      if (!data || !data.event || !data.analysis) {
+        console.error("Invalid API response:", data);
+        alert("⚠️ Invalid backend response");
         return;
       }
 
@@ -49,7 +54,7 @@ function App() {
 
     } catch (err) {
       console.error("FETCH ERROR:", err);
-      alert("Network error: Backend not reachable");
+      alert("⚠️ Backend is sleeping (Render free tier). Wait 30–60 sec.");
     }
   };
 
@@ -60,7 +65,7 @@ function App() {
     { name: "High", value: history.filter(h => h?.event?.severity === "high").length }
   ];
 
-  // ✅ Timeline safe
+  // ✅ Safe timeline
   const timelineData = history
     .slice()
     .reverse()
@@ -115,15 +120,20 @@ function App() {
           <p>No incidents yet. Click "Trigger Incident"</p>
         )}
 
-        {history.map((item, index) => (
-          <div key={index} className="history-card">
-            <p><b>Service:</b> {item?.event?.source || "N/A"}</p>
-            <p><b>Issue:</b> {item?.event?.message || "N/A"}</p>
-            <p><b>Severity:</b> {item?.event?.severity || "N/A"}</p>
-            <p><b>Root Cause:</b> {item?.analysis?.root_cause || "N/A"}</p>
-            <p><b>Fix:</b> {item?.analysis?.fix || "N/A"}</p>
-          </div>
-        ))}
+        {history.map((item, index) => {
+          // 🔥 CRASH PROTECTION
+          if (!item || !item.event || !item.analysis) return null;
+
+          return (
+            <div key={index} className="history-card">
+              <p><b>Service:</b> {item.event.source}</p>
+              <p><b>Issue:</b> {item.event.message}</p>
+              <p><b>Severity:</b> {item.event.severity}</p>
+              <p><b>Root Cause:</b> {item.analysis.root_cause}</p>
+              <p><b>Fix:</b> {item.analysis.fix}</p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
