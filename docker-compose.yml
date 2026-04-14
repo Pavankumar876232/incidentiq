@@ -35,6 +35,9 @@ services:
       - GF_SMTP_USER=bpavankumar303@gmail.com
       - GF_SMTP_PASSWORD=azto awno hcan komv
       - GF_SMTP_FROM_ADDRESS=bpavankumar303@gmail.com
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
 
   autoheal:
     build: ./backend

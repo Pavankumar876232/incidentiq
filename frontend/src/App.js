@@ -99,6 +99,18 @@ function App() {
           </BarChart>
         </div>
 
+        {/* 🔥 GRAFANA EMBED */}
+        <div className="card">
+            <h3>📡 Live Monitoring (Grafana)</h3>
+            <iframe
+            src="https://dandruff-amplify-tidings.ngrok-free.dev/d/adnjq94/f09f9a80-incidentiq-sre-dashboard?orgId=1&from=now-5m&to=now&timezone=browser&refresh=5s&kiosk"
+            width="100%"
+            height="450"
+            frameBorder="0"
+            title="Grafana Dashboard">
+            </iframe>
+        </div>
+
         <div className="card">
           <h3>📈 Incident Timeline</h3>
           <LineChart width={400} height={250} data={timelineData}>

@@ -42,3 +42,7 @@ button:hover {
   border-radius: 8px;
   margin-bottom: 12px;
 }
+.card iframe {
+  border-radius: 10px;
+  width: 100%;
+}
