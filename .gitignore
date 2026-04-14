@@ -1,0 +1,4 @@
+node_modules/
+__pycache__/
+.env
+grafana_backup.tar.gz
