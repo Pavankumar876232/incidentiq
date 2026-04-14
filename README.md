@@ -177,10 +177,10 @@ docker-compose up -d
 ## 📸 Demo Preview
 
 ### 🚀 Dashboard UI
-![Dashboard](dashboard.png)
+![Dashboard](assets/dashboard.png)
 
 ### 📊 Grafana Monitoring
-![Grafana](grafana.png)
+![Grafana](assets/grafana.png)
 
 ### Suggested:
 
