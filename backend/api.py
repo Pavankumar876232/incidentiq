@@ -4,15 +4,19 @@ from prometheus_client import Counter, generate_latest
 from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 
+# ✅ FIRST create app
+app = FastAPI()
+
+# ✅ THEN add middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # ✅ SAFE FOR NOW
+    allow_origins=["*"],   # safe for now
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ✅ Prometheus metric with labels
+# ✅ METRIC
 incident_requests_total = Counter(
     "incident_requests_total",
     "Total number of incidents",
@@ -32,13 +36,12 @@ def home():
 
 @app.post("/event")
 def create_event(event: Event):
-    # Increment metric
+
     incident_requests_total.labels(
         severity=event.severity,
         service=event.source
     ).inc()
 
-    # Static AI analysis
     analysis = {
         "root_cause": "High load caused crash",
         "fix": "Restart service & scale replicas",
@@ -61,9 +64,3 @@ def metrics():
 @app.get("/health")
 def health():
     return {"status": "ok"}
-
-
-# ✅ IMPORTANT FOR RENDER DEPLOYMENT
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=False)
