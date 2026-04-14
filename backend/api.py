@@ -4,12 +4,14 @@ from prometheus_client import Counter, generate_latest
 from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+origins = [
+    "https://incidentiq-lckrgzsoh-pavankumar876232s-projects.vercel.app",
+    "http://localhost:3000"
+]
 
-# ✅ CORS (for Vercel frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # You can restrict later
+    allow_origins=origins,   # ❗ NOT "*"
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
