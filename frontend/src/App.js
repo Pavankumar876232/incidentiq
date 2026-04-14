@@ -8,7 +8,7 @@ import {
 function App() {
   const [history, setHistory] = useState([]);
 
-  const API = "https://incidentiq-ryxt.onrender.com/";
+  const API = "https://incidentiq-ryxt.onrender.com";
   const triggerIncident = async () => {
     try {
       const severities = ["low", "medium", "high"];
