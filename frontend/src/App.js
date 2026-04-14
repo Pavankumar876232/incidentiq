@@ -8,7 +8,9 @@ import {
 function App() {
   const [history, setHistory] = useState([]);
 
+  // ✅ FIXED API (no trailing slash)
   const API = "https://incidentiq-ryxt.onrender.com";
+
   const triggerIncident = async () => {
     try {
       const severities = ["low", "medium", "high"];
@@ -26,32 +28,46 @@ function App() {
         })
       });
 
-      const data = await res.json();
+      // ❌ Handle backend failure
+      if (!res.ok) {
+        console.error("API ERROR:", res.status);
+        alert("Backend error: " + res.status);
+        return;
+      }
 
-      console.log("API RESPONSE:", data); // debug
+      const data = await res.json();
+      console.log("API RESPONSE:", data);
+
+      // ❌ Prevent crash if response is wrong
+      if (!data || !data.event) {
+        console.error("Invalid API response", data);
+        alert("Invalid response from backend");
+        return;
+      }
 
       setHistory((prev) => [data, ...prev]);
 
     } catch (err) {
-      console.error("ERROR:", err);
+      console.error("FETCH ERROR:", err);
+      alert("Network error: Backend not reachable");
     }
   };
 
-  // Severity distribution
+  // ✅ Safe severity calculation
   const severityData = [
     { name: "Low", value: history.filter(h => h?.event?.severity === "low").length },
     { name: "Medium", value: history.filter(h => h?.event?.severity === "medium").length },
     { name: "High", value: history.filter(h => h?.event?.severity === "high").length }
   ];
 
-  // Timeline (old → new) 
+  // ✅ Timeline safe
   const timelineData = history
-  .slice()
-  .reverse()
-  .map((_, i) => ({
-    index: i + 1,
-    incidents: Math.floor(Math.random() * 5) + 1
-  }));
+    .slice()
+    .reverse()
+    .map((_, i) => ({
+      index: i + 1,
+      incidents: Math.floor(Math.random() * 5) + 1
+    }));
 
   return (
     <div className="container">
@@ -101,11 +117,11 @@ function App() {
 
         {history.map((item, index) => (
           <div key={index} className="history-card">
-            <p><b>Service:</b> {item.event.source}</p>
-            <p><b>Issue:</b> {item.event.message}</p>
-            <p><b>Severity:</b> {item.event.severity}</p>
-            <p><b>Root Cause:</b> {item.analysis.root_cause}</p>
-            <p><b>Fix:</b> {item.analysis.fix}</p>
+            <p><b>Service:</b> {item?.event?.source || "N/A"}</p>
+            <p><b>Issue:</b> {item?.event?.message || "N/A"}</p>
+            <p><b>Severity:</b> {item?.event?.severity || "N/A"}</p>
+            <p><b>Root Cause:</b> {item?.analysis?.root_cause || "N/A"}</p>
+            <p><b>Fix:</b> {item?.analysis?.fix || "N/A"}</p>
           </div>
         ))}
       </div>
