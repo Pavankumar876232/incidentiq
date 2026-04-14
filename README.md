@@ -176,7 +176,8 @@ docker-compose up -d
 
 # 📸 Demo Preview
 
-> ⚠️ Add screenshots/GIF here for maximum impact
+![Dashboard](assets/dashboard.png)
+![Grafana](assets/grafana.png)
 
 ### Suggested:
 
