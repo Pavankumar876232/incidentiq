@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+sqlalchemy
+psycopg2-binary
+python-dotenv
+requests
+prometheus_client
+docker
+requests

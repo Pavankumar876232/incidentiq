@@ -1,0 +1,49 @@
+services:
+
+  backend:
+    build: ./backend
+    container_name: incidentiq-backend
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    container_name: incidentiq-frontend
+    ports:
+      - "3001:80"
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=smtp.gmail.com:587
+      - GF_SMTP_USER=bpavankumar303@gmail.com
+      - GF_SMTP_PASSWORD=azto awno hcan komv
+      - GF_SMTP_FROM_ADDRESS=bpavankumar303@gmail.com
+
+  autoheal:
+    build: ./backend
+    container_name: autoheal
+    command: python auto_heal.py
+    depends_on:
+      - backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  grafana_data:
