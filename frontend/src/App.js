@@ -31,16 +31,27 @@ function App() {
       });
 
       if (!res.ok) {
-        alert("Backend error");
+        const text = await res.text();
+        console.error("Backend Error:", text);
+        alert("Backend error — check console");
         setLoading(false);
         return;
       }
 
       const data = await res.json();
+
+      if (!data || !data.event) {
+        console.error("Invalid response:", data);
+        alert("Invalid backend response");
+        setLoading(false);
+        return;
+      }
+
       setHistory((prev) => [data, ...prev]);
 
     } catch (err) {
-      alert("Backend sleeping or network issue");
+      console.error("ERROR:", err);
+      alert("Network error or backend sleeping");
     }
 
     setLoading(false);
@@ -70,29 +81,29 @@ function App() {
 
       {/* CHARTS */}
       <div className="charts">
-        <div className="card">
+        <div className="chart">
           <h3>📊 Severity Distribution</h3>
-          <BarChart width={350} height={250} data={severityData}>
+          <BarChart width={400} height={250} data={severityData}>
             <XAxis dataKey="name" />
             <YAxis />
             <Tooltip />
-            <Bar dataKey="value" fill="#4CAF50" />
+            <Bar dataKey="value" />
           </BarChart>
         </div>
 
-        <div className="card">
+        <div className="chart">
           <h3>📈 Incident Timeline</h3>
-          <LineChart width={400} height={250} data={timelineData}>
+          <LineChart width={500} height={250} data={timelineData}>
             <XAxis dataKey="index" />
             <YAxis />
             <Tooltip />
-            <CartesianGrid stroke="#ccc" />
-            <Line type="monotone" dataKey="incidents" stroke="#2196F3" />
+            <CartesianGrid />
+            <Line type="monotone" dataKey="incidents" />
           </LineChart>
         </div>
       </div>
 
-      {/* AI BOX */}
+      {/* AI ANALYSIS */}
       <div className="ai-box">
         <h3>🤖 AI Analysis</h3>
         <p><b>Root Cause:</b> High load caused crash</p>
@@ -101,21 +112,33 @@ function App() {
       </div>
 
       {/* HISTORY */}
-      <h2>📜 Incident History</h2>
+      <div>
+        <h2>📜 Incident History</h2>
 
-      {history.length === 0 && (
-        <p>No incidents yet. Click "Trigger Incident"</p>
-      )}
+        {history.length === 0 && (
+          <p>No incidents yet. Click "Trigger Incident"</p>
+        )}
 
-      {history.map((item, index) => (
-        <div key={index} className="history-card">
-          <p><b>Service:</b> {item?.event?.source}</p>
-          <p><b>Issue:</b> {item?.event?.message}</p>
-          <p><b>Severity:</b> {item?.event?.severity}</p>
-          <p><b>Root Cause:</b> {item?.analysis?.root_cause}</p>
-          <p><b>Fix:</b> {item?.analysis?.fix}</p>
-        </div>
-      ))}
+        {history.map((item, index) => (
+          <div
+            key={index}
+            style={{
+              border: "1px solid #ccc",
+              padding: "10px",
+              marginBottom: "10px",
+              borderRadius: "8px"
+            }}
+          >
+            <p><b>Service:</b> {item?.event?.source}</p>
+            <p><b>Issue:</b> {item?.event?.message}</p>
+            <p><b>Severity:</b> {item?.event?.severity}</p>
+            <p><b>Root Cause:</b> {item?.analysis?.root_cause}</p>
+            <p><b>Fix:</b> {item?.analysis?.fix}</p>
+            <p><b>Action:</b> {item?.action}</p>
+            <p><b>Alert:</b> {item?.alert}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
